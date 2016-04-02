@@ -10,18 +10,33 @@ output: html_document
 
 ## Exploratory Data Analysis  
 
-``` {r, message=FALSE,echo=TRUE}
+```{r library, message=FALSE, echo=FALSE}
+require(ggplot2) #import ggplot library
+```
+``` {r load, message=FALSE,echo=TRUE}
 data(mtcars) #load mtcars data
 str(mtcars) #checkout the variables in mtcars
 data.frame(cars) <- subset(mtcars)
 ```
-We can see that the following variables should be converted to factor variables for accuracy of our assessment:
+We can see that the following variables should be converted to factor variables for accuracy of our assessment:  
 ```{r factor, echo=TRUE}
-mtcars$cyl <- factor(mtcars$cyl)
-mtcars$vs <- factor(mtcars$vs)
-mtcars$gear <- factor(mtcars$gear)
-mtcars$carb <- factor(mtcars$carb)
-mtcars$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
+mtcars2 <- mtcars
+mtcars2$cyl <- factor(mtcars$cyl)
+mtcars2$vs <- factor(mtcars$vs)
+mtcars2$gear <- factor(mtcars$gear)
+mtcars2$carb <- factor(mtcars$carb)
+mtcars2$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
+```
+Let's check the correlation matrix for to see what kind of relationship exists between the variables and *mpg*. We will square the result for easy comparison. We are using original *mtcars* data frame with numeric values to be able to use *cor* function.   
+```{r correlation, echo=TRUE}
+corCars <- cor(mtcars) #form correlation matrix
+corCars[,1]^2 #display first row, squared
+```
+In our preliminary analysis, it looks like *mpg* is highly correlated with *cyl*, *disp*, *hp* and *wt* variables.  
+Since we are asked to analyze the relationship between transmission and *mpg*, let's check that relationship with a boxplot:  
+```{r box, echo=TRUE, fig.height=4, fig.width=6}
+boxplot(mpg ~ am, data = mtcars2, col = (c("green","blue")), main="MPG vs Transmission", ylab = "Miles Per Gallon", xlab = "Transmission Type")
+hist(stepDay$steps_by_day, main="Number of Steps Taken Each Day", xlab="Number of Steps per Day", ylab="Frequency", col = "red")
 ```
 ## Model Fitting  
 
