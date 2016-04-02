@@ -10,7 +10,19 @@ output: html_document
 
 ## Exploratory Data Analysis  
 
-
+``` {r, message=FALSE,echo=TRUE}
+data(mtcars) #load mtcars data
+str(mtcars) #checkout the variables in mtcars
+data.frame(cars) <- subset(mtcars)
+```
+We can see that the following variables should be converted to factor variables for accuracy of our assessment:
+```{r factor, echo=TRUE}
+mtcars$cyl <- factor(mtcars$cyl)
+mtcars$vs <- factor(mtcars$vs)
+mtcars$gear <- factor(mtcars$gear)
+mtcars$carb <- factor(mtcars$carb)
+mtcars$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
+```
 ## Model Fitting  
 
 
