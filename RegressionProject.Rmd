@@ -74,6 +74,8 @@ The hat values are not too far from one another, therefore, we can confirm that 
 
 ## Results  
 
-
+Based on our analysis, we have found out that fuel efficiency(mpg) is indeed related to type of transmission in cars.  
+Cars with manual transmission are more fuel efficient than cars with automatic transmission.  
+Mean *mpg* value for automatic transmission turns out to be 17.1, whereas it is 24.4 for manual transmission cars.  
 
 ## Appendix  
