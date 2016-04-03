@@ -36,10 +36,22 @@ In our preliminary analysis, it looks like *mpg* is highly correlated with *cyl*
 Since we are asked to analyze the relationship between transmission and *mpg*, let's check that relationship with a boxplot:  
 ```{r box, echo=TRUE, fig.height=4, fig.width=6}
 boxplot(mpg ~ am, data = mtcars2, col = (c("green","blue")), main="MPG vs Transmission", ylab = "Miles Per Gallon", xlab = "Transmission Type")
-hist(stepDay$steps_by_day, main="Number of Steps Taken Each Day", xlab="Number of Steps per Day", ylab="Frequency", col = "red")
 ```
+Our initial analysis showed us that manual transmission may be more fuel efficient than automatic. Now we need to check the validity of our data and see if there are any dependencies between variables that might be skewing our results.  
+
 ## Model Fitting  
 
+Let's try to find the best model to fit. First we will fit all the variables. Then let's use *step* function to find the best fit.  
+Source for *step* function usage is [here](http://www.stat.columbia.edu/~martin/W2024/R10.pdf)
+```{r fit1, echo=TRUE}
+fit0 <- lm(mpg ~ am, mtcars2) #our starting model
+fit1 <- lm(mpg ~ ., mtcars2) #our full model
+fit2 <- step(fit0, scope=list(upper=fit1),direction="both",trace=0) #create the best fit
+summary(fit2)
+```
+Looking at the summary, we see that the best model includes *am*, *wt*, *qsec* as the regressors. R^2 value shows us that our
+model explains 84% of the variability. Looking at the p-values, we can see that all of these regressors are significant with
+an alpha = 0.05.
 
 ## Diagnostics  
 
