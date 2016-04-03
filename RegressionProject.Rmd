@@ -43,7 +43,7 @@ Our initial analysis showed us that manual transmission may be more fuel efficie
 
 Let's try to find the best model to fit. First we will fit all the variables. Then let's use *step* function to find the best fit.  
 Source for *step* function usage is [here](http://www.stat.columbia.edu/~martin/W2024/R10.pdf)
-```{r fit1, echo=TRUE}
+```{r fit, echo=TRUE}
 fit0 <- lm(mpg ~ am, mtcars2) #our starting model
 fit1 <- lm(mpg ~ ., mtcars2) #our full model
 fit2 <- step(fit0, scope=list(upper=fit1),direction="both",trace=0) #create the best fit
@@ -51,24 +51,29 @@ summary(fit2)
 ```
 Looking at the summary, we see that the best model includes *am*, *wt*, *qsec* as the regressors. R^2 value shows us that our
 model explains 84% of the variability. Looking at the p-values, we can see that all of these regressors are significant with
-an alpha = 0.05.
+an alpha = 0.05.  
 
 ## Diagnostics  
 
+Now let's examine our residuals to see if there are any issues with our model.  
+```{r resid, echo=TRUE}
+par(mfrow=c(2, 2))
+plot(fit2)
+```
+Properties that we find out based on the plots:  
+Independence: Residuals vs Fitted values plot shows no specific pattern.  
+Normality: Normal Q-Q plot shows us that residuals are normally distributed as they are close to the line.  
+Constant Covariance: Scale-Location plot affirms the constant variance, since the points are randomly distributed.  
+No Outliers: Residuals vs. Leverage shows all values within the 0.5 band, therefore no influential outliers are present.  
+
+Let's check some of the outliers to confirm that the outliers have no significant leverage:  
+```{r hatvalue, echo=TRUE}
+summary(round(hatvalues(fit2),3))
+```
+The hat values are not too far from one another, therefore, we can confirm that there are no influential outliers.  
 
 ## Results  
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r}
-summary(cars)
-```
 
-You can also embed plots, for example:
-
-```{r, echo=FALSE}
-plot(cars)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Appendix  
