@@ -7,9 +7,9 @@ output: html_document
 
 ## Executive Summary  
 
-This report explores the relationship between a set of variables and miles per gallon (MPG) for Motor Trend magazine. Questions that we are striving to answer are if an automatic or manual transmission better for MPG; what the quantified MPG difference between automatic and manual transmissions are.   
+This report explores the relationship between a set of variables and miles per gallon (MPG) for Motor Trend magazine. Questions that we are striving to answer are if an automatic or manual transmission better for MPG; what the quantified MPG difference between automatic and manual transmissions are.  
 
-As a resultof analysis, we have found out that fuel efficiency(mpg) is indeed related to type of transmission in cars. Cars with manual transmission are more fuel efficient than cars with automatic transmission. Mean *mpg* value for automatic transmission turns out to be 17.1, whereas it is 24.4 for manual transmission cars.  
+As a result of our analysis, we have found out that fuel efficiency(mpg) is indeed related to type of transmission in cars. Cars with manual transmission are more fuel efficient than cars with automatic transmission. Mean *mpg* value for automatic transmission turns out to be 17.1, whereas it is 24.4 for manual transmission cars.  
 
 ## Exploratory Data Analysis  
 
@@ -20,8 +20,7 @@ require(ggplot2) #import ggplot library
 data(mtcars) #load mtcars data
 str(mtcars) #checkout the variables in mtcars
 ```
-See appendix for the structure display of mtcars data frame.  
-We can see that variables *cyl*, *vs*, *gear*, *carb* and *am* should be converted to factor variables. See appendix for conversion.  
+When we look at the structure of mtcars data frame. We can see that variables *cyl*, *vs*, *gear*, *carb* and *am* should be converted to factor variables.  
 ```{r factor, echo=FALSE}
 mtcars2 <- mtcars
 mtcars2$cyl <- factor(mtcars$cyl)
@@ -31,16 +30,13 @@ mtcars2$carb <- factor(mtcars$carb)
 mtcars2$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
 ```
 Let's check the correlation matrix for to see what kind of relationship exists between the variables and *mpg*. We will square the result for easy comparison. We are using original *mtcars* data frame with numeric values to be able to use *cor* function.   
-```{r correlation, echo=TRUE,results='hide'}
+```{r correlation, echo=TRUE}
 corCars <- cor(mtcars) #form correlation matrix
-corCars[,1]^2 #display first row, squared
+round(corCars[,1]^2,2) #display first row, squared
 ```
-See appendix for correlations. In our preliminary analysis, it looks like *mpg* is highly correlated with *cyl*, *disp*, *hp* and *wt* variables. Since we are asked to analyze the relationship between transmission and *mpg*, we will check that relationship with a boxplot.  
-```{r box, eval=FALSE,results='hide'}
-boxplot(mpg ~ am, data = mtcars2, col = (c("green","blue")), main="MPG vs Transmission", ylab = "Miles Per Gallon", xlab = "Transmission Type")
-```
-See appendix for the boxplot.  
-Our initial analysis showed us that manual transmission may be more fuel efficient than automatic. Now we need to check the validity of our data and see if there are any dependencies between variables that might be skewing our results.  
+In our preliminary analysis, it looks like *mpg* is highly correlated with *cyl*, *disp*, *hp* and *wt* variables. Since we are asked to analyze the relationship between transmission and *mpg*, we will check that relationship with a boxplot.  
+
+See appendix for the boxplot. Our initial analysis showed us that manual transmission may be more fuel efficient than automatic. Now we need to check the validity of our data and see if there are any dependencies between variables that might be skewing our results.  
 
 ## Model Fitting  
 
@@ -59,14 +55,13 @@ are significant with an alpha = 0.05.
 
 Now let's examine our residuals to see if there are any issues with our model.  
 ```{r resid, eval=FALSE,results='hide'}
-par(mfrow=c(2, 2))
-plot(fit2)
+par(mfrow=c(2, 2)); plot(fit2)
 ```
 See appendix for the residual plots. Properties that we find out based on the plots:  
-Independence: Residuals vs Fitted values plot shows no specific pattern.  
-Normality: Normal Q-Q plot shows us that residuals are normally distributed as they are close to the line.  
-Constant Covariance: Scale-Location plot affirms the constant variance, since the points are randomly distributed.  
-No Outliers: Residuals vs. Leverage shows all values within the 0.5 band, therefore no influential outliers are present.  
+**Independence**: Residuals vs Fitted values plot shows no specific pattern.  
+**Normality**: Normal Q-Q plot shows us that residuals are normally distributed as they are close to the line.  
+**Constant Covariance**: Scale-Location plot affirms the constant variance, since the points are randomly distributed.  
+**No Outliers**: Residuals vs. Leverage shows all values within the 0.5 band, therefore no influential outliers are present.  
 
 Let's check some of the outliers to confirm that the outliers have no significant leverage:  
 ```{r hatvalue, echo=TRUE}
@@ -82,39 +77,18 @@ Mean *mpg* value for automatic transmission turns out to be 17.1, whereas it is 
 
 ## Appendix  
 
-### Structure of mtcars Data Frame  
-``` {r load2, echo=TRUE}
-str(mtcars) #checkout the variables in mtcars
-```
-
-### Factor Conversion
-```{r factor2, echo=TRUE}
-mtcars2 <- mtcars
-mtcars2$cyl <- factor(mtcars$cyl)
-mtcars2$vs <- factor(mtcars$vs)
-mtcars2$gear <- factor(mtcars$gear)
-mtcars2$carb <- factor(mtcars$carb)
-mtcars2$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
-```
-
 ### Boxplot Showing Miles per Gallon vs Transmission Type
-```{r box2, echo=TRUE, fig.height=4, fig.width=6}
+```{r box2, echo=TRUE, fig.height=3, fig.width=5}
 boxplot(mpg ~ am, data = mtcars2, col = (c("green","blue")), main="MPG vs Transmission", ylab = "Miles Per Gallon", xlab = "Transmission Type")
 ```
 
-### Correlation
-```{r correlation2, echo=TRUE}
-corCars <- cor(mtcars) #form correlation matrix
-corCars[,1]^2 #display first row, squared
-```
-
 ### Summary for Model Fit
-```{r fit2, echo=TRUE}
+```{r fit2, echo=FALSE}
 summary(fit2)
 ```
 
 ### Residual Plots for Model Fit  
-```{r resid2, echo=TRUE, fig.height=8, fig.width=10}
+```{r resid2, echo=FALSE, fig.height=6, fig.width=8}
 par(mfrow=c(2, 2))
 plot(fit2)
 ```
