@@ -7,19 +7,22 @@ output: html_document
 
 ## Executive Summary  
 
+This report explores the relationship between a set of variables and miles per gallon (MPG) for Motor Trend magazine. Questions that we are striving to answer are if an automatic or manual transmission better for MPG; what the quantified MPG difference between automatic and manual transmissions are.   
+
+As a resultof analysis, we have found out that fuel efficiency(mpg) is indeed related to type of transmission in cars. Cars with manual transmission are more fuel efficient than cars with automatic transmission. Mean *mpg* value for automatic transmission turns out to be 17.1, whereas it is 24.4 for manual transmission cars.  
 
 ## Exploratory Data Analysis  
 
 ```{r library, message=FALSE, echo=FALSE}
 require(ggplot2) #import ggplot library
 ```
-``` {r load, message=FALSE,echo=TRUE}
+``` {r load, message=FALSE,echo=TRUE,results='hide'}
 data(mtcars) #load mtcars data
 str(mtcars) #checkout the variables in mtcars
-data.frame(cars) <- subset(mtcars)
 ```
-We can see that the following variables should be converted to factor variables for accuracy of our assessment:  
-```{r factor, echo=TRUE}
+See appendix for the structure display of mtcars data frame.  
+We can see that variables *cyl*, *vs*, *gear*, *carb* and *am* should be converted to factor variables. See appendix for conversion.  
+```{r factor, echo=FALSE}
 mtcars2 <- mtcars
 mtcars2$cyl <- factor(mtcars$cyl)
 mtcars2$vs <- factor(mtcars$vs)
@@ -28,39 +31,38 @@ mtcars2$carb <- factor(mtcars$carb)
 mtcars2$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
 ```
 Let's check the correlation matrix for to see what kind of relationship exists between the variables and *mpg*. We will square the result for easy comparison. We are using original *mtcars* data frame with numeric values to be able to use *cor* function.   
-```{r correlation, echo=TRUE}
+```{r correlation, echo=TRUE,results='hide'}
 corCars <- cor(mtcars) #form correlation matrix
 corCars[,1]^2 #display first row, squared
 ```
-In our preliminary analysis, it looks like *mpg* is highly correlated with *cyl*, *disp*, *hp* and *wt* variables.  
-Since we are asked to analyze the relationship between transmission and *mpg*, let's check that relationship with a boxplot:  
-```{r box, echo=TRUE, fig.height=4, fig.width=6}
+See appendix for correlations. In our preliminary analysis, it looks like *mpg* is highly correlated with *cyl*, *disp*, *hp* and *wt* variables. Since we are asked to analyze the relationship between transmission and *mpg*, we will check that relationship with a boxplot.  
+```{r box, eval=FALSE,results='hide'}
 boxplot(mpg ~ am, data = mtcars2, col = (c("green","blue")), main="MPG vs Transmission", ylab = "Miles Per Gallon", xlab = "Transmission Type")
 ```
+See appendix for the boxplot.  
 Our initial analysis showed us that manual transmission may be more fuel efficient than automatic. Now we need to check the validity of our data and see if there are any dependencies between variables that might be skewing our results.  
 
 ## Model Fitting  
 
 Let's try to find the best model to fit. First we will fit all the variables. Then let's use *step* function to find the best fit.  
 Source for *step* function usage is [here](http://www.stat.columbia.edu/~martin/W2024/R10.pdf)
-```{r fit, echo=TRUE}
+```{r fit, echo=TRUE,results='hide'}
 fit0 <- lm(mpg ~ am, mtcars2) #our starting model
 fit1 <- lm(mpg ~ ., mtcars2) #our full model
 fit2 <- step(fit0, scope=list(upper=fit1),direction="both",trace=0) #create the best fit
 summary(fit2)
 ```
-Looking at the summary, we see that the best model includes *am*, *wt*, *qsec* as the regressors. R^2 value shows us that our
-model explains 84% of the variability. Looking at the p-values, we can see that all of these regressors are significant with
-an alpha = 0.05.  
+See appendix for summary. Looking at the summary, we see that the best model includes *am*, *wt*, *qsec* as the regressors. R^2 value shows us that our model explains 84% of the variability. Looking at the p-values, we can see that all of these regressors 
+are significant with an alpha = 0.05.  
 
 ## Diagnostics  
 
 Now let's examine our residuals to see if there are any issues with our model.  
-```{r resid, echo=TRUE}
+```{r resid, eval=FALSE,results='hide'}
 par(mfrow=c(2, 2))
 plot(fit2)
 ```
-Properties that we find out based on the plots:  
+See appendix for the residual plots. Properties that we find out based on the plots:  
 Independence: Residuals vs Fitted values plot shows no specific pattern.  
 Normality: Normal Q-Q plot shows us that residuals are normally distributed as they are close to the line.  
 Constant Covariance: Scale-Location plot affirms the constant variance, since the points are randomly distributed.  
@@ -79,3 +81,40 @@ Cars with manual transmission are more fuel efficient than cars with automatic t
 Mean *mpg* value for automatic transmission turns out to be 17.1, whereas it is 24.4 for manual transmission cars.  
 
 ## Appendix  
+
+### Structure of mtcars Data Frame  
+``` {r load2, echo=TRUE}
+str(mtcars) #checkout the variables in mtcars
+```
+
+### Factor Conversion
+```{r factor2, echo=TRUE}
+mtcars2 <- mtcars
+mtcars2$cyl <- factor(mtcars$cyl)
+mtcars2$vs <- factor(mtcars$vs)
+mtcars2$gear <- factor(mtcars$gear)
+mtcars2$carb <- factor(mtcars$carb)
+mtcars2$am <- factor(mtcars$am,labels=c('Automatic','Manual'))
+```
+
+### Boxplot Showing Miles per Gallon vs Transmission Type
+```{r box2, echo=TRUE, fig.height=4, fig.width=6}
+boxplot(mpg ~ am, data = mtcars2, col = (c("green","blue")), main="MPG vs Transmission", ylab = "Miles Per Gallon", xlab = "Transmission Type")
+```
+
+### Correlation
+```{r correlation2, echo=TRUE}
+corCars <- cor(mtcars) #form correlation matrix
+corCars[,1]^2 #display first row, squared
+```
+
+### Summary for Model Fit
+```{r fit2, echo=TRUE}
+summary(fit2)
+```
+
+### Residual Plots for Model Fit  
+```{r resid2, echo=TRUE, fig.height=8, fig.width=10}
+par(mfrow=c(2, 2))
+plot(fit2)
+```
